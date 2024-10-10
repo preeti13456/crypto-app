@@ -1,0 +1,28 @@
+const express = require("express");
+const connectDB = require("./config/db");
+const statsRoute = require("./routes/stats");
+const deviationRoute = require("./routes/deviation");
+const scheduleFetch = require("./jobs/fetchCryptoData");
+
+require("dotenv").config();
+
+const app = express();
+const PORT = process.env.PORT || 3000;
+
+// Connect to MongoDB
+connectDB();
+
+// Schedule the background job
+scheduleFetch();
+
+// Middleware
+app.use(express.json());
+
+// Routes
+app.use("/stats", statsRoute);
+app.use("/deviation", deviationRoute);
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}`);
+});
